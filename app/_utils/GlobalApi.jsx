@@ -42,14 +42,31 @@ const addToCart = (data,jwt) => axiosClient.post('/user-carts',data,{
     }
 });
 
-const getCartItems = (userId,jwt) => axiosClient.get('/user-carts?filters[userId][$eq]='+userId+'&populate=*',{
+const getCartItems = (userId,jwt) => axiosClient.get('/user-carts?filters[userId][$eq]='+userId+'&[populate][product][populate][images][populate][0]=url',{
     headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
         Authorization: 'Bearer '+jwt
     }
 }).then(resp => {
-    return resp.data.data;
+    const data = resp.data.data;
+    const cartItemsList = data.map((item,index) => ({
+        name:  item.attributes.product?.data?.attributes?.name,
+        quantity: item.attributes.quantity,
+        amount: item.attributes.amount,
+        image: item.attributes.product?.data?.attributes?.images?.data[0]?.attributes?.url,
+        actualPrice: item.attributes.product?.data.attributes.mrp,
+        id: item.id
+    }))
+    return cartItemsList;
+})
+
+const deleteCartItem = (id,jwt) => axiosClient.delete('/user-carts/'+id,{
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer '+jwt
+    }
 })
 
 export default {
@@ -61,5 +78,6 @@ export default {
     registerUser,
     signInUser,
     addToCart,
-    getCartItems
+    getCartItems,
+    deleteCartItem
 }
