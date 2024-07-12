@@ -5,15 +5,7 @@ import React, { useEffect, useState } from 'react'
 
 const CartItemList = ({cartItemList,onDeleteItem}) => {
 
-    const [subtotal,setSubtotal] = useState(0);
-
-    useEffect(()=>{
-        let total=0;
-        cartItemList.forEach(element => {
-            total = total + element.amount
-        });
-        setSubtotal(total.toFixed(2));
-    },[]);
+    
   return (
     <div>
         <div className='h-[500px] overflow-auto'>
@@ -35,10 +27,10 @@ const CartItemList = ({cartItemList,onDeleteItem}) => {
                 </div>
             ))}
         </div>
-        <div className='absolute w-[90%] bottom-6 flex flex-col'>
+        {/* <div className='absolute w-[90%] bottom-6 flex flex-col'>
             <h2 className='text-lg font-bold flex justify-between'>Subtotal <span>RM {subtotal}</span></h2>
-            <Button>View Cart</Button>
-        </div>
+            <Button>Checkout</Button>
+        </div> */}
     </div>
   )
 }

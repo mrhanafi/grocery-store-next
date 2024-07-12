@@ -17,6 +17,7 @@ import { useRouter } from 'next/navigation'
 import { UpdateCartContext } from '../_context/UpdateCartContext'
 import {
     Sheet,
+    SheetClose,
     SheetContent,
     SheetDescription,
     SheetHeader,
@@ -72,6 +73,17 @@ const Header = () => {
             getCartItems();
         })
     }
+
+    const [subtotal,setSubtotal] = useState(0);
+
+    useEffect(()=>{
+        let total=0;
+        cartItemList.forEach(element => {
+            total = total + element.amount
+        });
+        setSubtotal(total.toFixed(2));
+    },[cartItemList]);
+
   return (
     <div className='p-5 shadow-sm flex justify-between'>
         <div className='flex items-center gap-8'>
@@ -134,6 +146,12 @@ const Header = () => {
                         <CartItemList cartItemList={cartItemList} onDeleteItem={onDeleteItem} />
                     </SheetDescription>
                     </SheetHeader>
+                    <SheetClose asChild>
+                    <div className='absolute w-[90%] bottom-6 flex flex-col'>
+                        <h2 className='text-lg font-bold flex justify-between'>Subtotal <span>RM {subtotal}</span></h2>
+                        <Button onClick={() => router.push(jwt?'/checkout' : '/sign-in')}>Checkout</Button>
+                    </div>
+                    </SheetClose>
                 </SheetContent>
             </Sheet>
             {!isLogin ?
